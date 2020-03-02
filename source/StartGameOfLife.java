@@ -137,9 +137,6 @@ public class StartGameOfLife extends JFrame {
 			catch (IllegalArgumentException error) {
 				System.out.println("One or more of the input parameters are not strict positive values (" + numRowTxtField.getText() + ", " + numColRxtField.getText() + "), try again with correct only > 0 values");
 			}
-			finally {
-				System.out.println("One or more of the input parameters are not correct values, try again with positive integers");
-			}
 		}
 	}
 }

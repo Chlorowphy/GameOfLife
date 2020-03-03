@@ -103,18 +103,29 @@ public class BoardFrame extends JFrame {
 	
 	/***********
 	 * Public functions
-	 ***********/
-	public int getNumCurrentAliveCells() {		
-		int numAliveCells = 0;
+	 ***********/	
+	public void calculateNextGeneration() {
 		for(int row = 0; row < rowCount; row++) {
 			for(int col = 0; col < colCount; col++) {
-				Cell cell = currentGenerationGridCells[row][col];
-				if(cell.isAlive()) {
-					numAliveCells++;
-				}
+				nextGenerationGridCells[row][col].setAlive(livesForTheNextGeneration(row, col));
+//		for(Point checkPoint : withAtLeastOneAliveMateCellsList) {
+//			int row = checkPoint.x;
+//			int col = checkPoint.y;
+//		}	
 			}
 		}
-		return numAliveCells;
+		updateCurrentGenerationGridCells();
+		updateDisplayBoard();
+	}
+	
+	public boolean livesForTheNextGeneration(final int ROW, final int COL) {
+		if(cellIsInTheGrid(ROW, COL)) {
+			int numberAliveNeighbours = countingAliveNeighbours(ROW, COL);
+			if(numberAliveNeighbours == 3 || (numberAliveNeighbours == 2 && currentGenerationGridCells[ROW][COL].isAlive())) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public int countingAliveNeighbours(final int ROW, final int COL) {
@@ -131,30 +142,6 @@ public class BoardFrame extends JFrame {
 		return numberAliveNeighbours;
 	}
 	
-	public boolean livesForTheNextGeneration(final int ROW, final int COL) {
-		if(cellIsInTheGrid(ROW, COL)) {
-			int numberAliveNeighbours = countingAliveNeighbours(ROW, COL);
-			if(numberAliveNeighbours == 3 || (numberAliveNeighbours == 2 && currentGenerationGridCells[ROW][COL].isAlive())) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public void calculateNextGeneration() {
-		for(int row = 0; row < rowCount; row++) {
-			for(int col = 0; col < colCount; col++) {
-				nextGenerationGridCells[row][col].setAlive(livesForTheNextGeneration(row, col));
-//		for(Point checkPoint : withAtLeastOneAliveMateCellsList) {
-//			int row = checkPoint.x;
-//			int col = checkPoint.y;
-//		}	
-			}
-		}
-		updateCurrentGenerationGridCells();
-		updateDisplayBoard();
-	}
-	
 	/**
 	 * This function is ONLY used by the Unit Tests.
 	 * @param ROW
@@ -168,6 +155,23 @@ public class BoardFrame extends JFrame {
 //				updateWithAtLeastOneAliveMateCellsList(ROW, COL);
 //			}
 		}
+	}
+	
+	/**
+	 * This function is ONLY used by the Unit Tests.
+	 * @return
+	 */
+	public int getNumCurrentAliveCells() {		
+		int numAliveCells = 0;
+		for(int row = 0; row < rowCount; row++) {
+			for(int col = 0; col < colCount; col++) {
+				Cell cell = currentGenerationGridCells[row][col];
+				if(cell.isAlive()) {
+					numAliveCells++;
+				}
+			}
+		}
+		return numAliveCells;
 	}
 	
 //	/**

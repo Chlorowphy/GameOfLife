@@ -28,7 +28,7 @@ public class Cell extends JPanel {
 	public Cell() {
 		setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 		updateRenderer();
-		addMouseListener(new CellMousListener());
+		addMouseListener(new CellMouseListener());
 	}
 	
 	/***********
@@ -58,7 +58,7 @@ public class Cell extends JPanel {
 	/***********
 	 * Class functions
 	 ***********/
-	private class CellMousListener implements MouseListener {
+	private class CellMouseListener implements MouseListener {
 		@Override
 		public void mouseClicked(MouseEvent event) {
 			setAlive(!isAlive);

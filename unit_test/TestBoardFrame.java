@@ -1,7 +1,8 @@
 package unit_test;
 
-import java.awt.Point;
-import java.util.ArrayList;
+//import java.awt.Point;
+import java.io.IOException;
+//import java.util.ArrayList;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ import source.BoardFrame;
  * @date 01/03/2020
  * @version 1.0
  */
-public class TestBoardFrame extends TestCase {
+public class TestBoardFrame extends TestCase {	
 	@Test
 	public void testCreateBoardThrowsExceptionForNonPositiveValuesForRow() {
 		try {
@@ -22,7 +23,7 @@ public class TestBoardFrame extends TestCase {
 			BoardFrame board = new BoardFrame(-2, 3);
 			fail("Board creation does not trow an exception when input values are not positive");
 		}
-		catch (IllegalArgumentException error) {
+		catch (IOException error) {
 			assertTrue("Board creation throws an exception when input values are not positive", true);
 		}
 	}
@@ -34,7 +35,7 @@ public class TestBoardFrame extends TestCase {
 			BoardFrame board = new BoardFrame(3, -2);
 			fail("Board creation does not trow an exception when input values are not positive");
 		}
-		catch (IllegalArgumentException error) {
+		catch (IOException error) {
 			assertTrue("Board creation throws an exception when input values are not positive", true);
 		}
 	}
@@ -46,135 +47,207 @@ public class TestBoardFrame extends TestCase {
 			BoardFrame board = new BoardFrame(2, 3);
 			assertTrue("Board creation does not trow an exception when input values are positive", true);
 		}
-		catch (IllegalArgumentException error) {
+		catch (IOException error) {
 			fail("Board creation throws an exception when input values are positive");
 		}
 	}
 	
 	@Test
-	public void testCreateBoardCreateGridOf0AliveCells() {
+	public void testCreateBoardCreateGridOf0AliveCell() {
 		final int NUM_ROW = 3;
 		final int NUM_COLUMN = 2;
-		BoardFrame board = new BoardFrame(NUM_ROW, NUM_COLUMN);
-		assertTrue("Board with " + NUM_ROW + " rows and " + NUM_COLUMN + " columns creates a grid of 0 alive cells", (board.getNumCurrentAliveCells() == 0) == true);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(NUM_ROW, NUM_COLUMN);
+			assertTrue("Board with " + NUM_ROW + " rows and " + NUM_COLUMN + " columns creates a grid of 0 alive cells", (board.getNumCurrentAliveCells() == 0) == true);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board and create a grid with 0 alive cell");
+		}
 	}
 	
 	@Test
 	public void testBoardWith1CellAliveOnlyHave1AliveCells() {
 		final int NUM_ROW = 3;
 		final int NUM_COLUMN = 2;
-		BoardFrame board = new BoardFrame(NUM_ROW, NUM_COLUMN);
-		board.setNewStateCell(0, 1, true);
-		assertTrue("Board with " + NUM_ROW + " rows and " + NUM_COLUMN + " columns and 1 alive cell has only 1 alive cells", (board.getNumCurrentAliveCells() == 1) == true);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(NUM_ROW, NUM_COLUMN);
+			board.setNewStateCell(0, 1, true);
+			assertTrue("Board with " + NUM_ROW + " rows and " + NUM_COLUMN + " columns and 1 alive cell has only 1 alive cells", (board.getNumCurrentAliveCells() == 1) == true);
+		} 
+		catch (IOException e) {
+			fail("Fail to creat board an create a grid with 1 alive cell");
+		}
 	}
 	
 	@Test
 	public void test1AliveCellWithNoMateHasNoAliveNeighbour() {
-		BoardFrame board = new BoardFrame(4,8);
-		board.setNewStateCell(1, 4, true);
-		assertTrue("1 alive cell on the board has no alive neighbour", (board.countingAliveNeighbours(1, 4) == 0) == true);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4,8);
+			board.setNewStateCell(1, 4, true);
+			assertTrue("1 alive cell on the board has no alive neighbour", (board.countingAliveNeighbours(1, 4) == 0) == true);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for 1 alive cell with 0 alive neighbours test");
+		}
 	}
 	
 	@Test
 	public void test2MateAliveCellsHave1Neighbour() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(1, 4, true);
-		board.setNewStateCell(1, 5, true);
-		assertTrue("1 alive cell with 1 mate has 1 alive neighbour", (board.countingAliveNeighbours(1, 4) == 1) == true);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4, 8);
+			board.setNewStateCell(1, 4, true);
+			board.setNewStateCell(1, 5, true);
+			assertTrue("1 alive cell with 1 mate has 1 alive neighbour", (board.countingAliveNeighbours(1, 4) == 1) == true);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for 2 alive mate cells test");
+		}
 	}
 	
 	@Test
 	public void test1AliveCellWithNoAliveMAteOnACornerHas0Neighbour() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(0, 0, true);
-		assertTrue("1 alive cell with no mate, on the corner, has no alive neighbour", (board.countingAliveNeighbours(0, 0) == 0) == true);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4, 8);
+			board.setNewStateCell(0, 0, true);
+			assertTrue("1 alive cell with no mate, on the corner, has no alive neighbour", (board.countingAliveNeighbours(0, 0) == 0) == true);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for alive cell on a corner with 0 alive neighbour test");
+		}
 	}
 	
 	@Test
 	public void test1AliveCellWithLessThan2AliveMatesDies() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(1, 4, true);
-		assertTrue("1 alive cell with less than 2 alive mates dies at the next generation", board.livesForTheNextGeneration(1, 4) == false);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4, 8);
+			board.setNewStateCell(1, 4, true);
+			assertTrue("1 alive cell with less than 2 alive mates dies at the next generation", board.livesForTheNextGeneration(1, 4) == false);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for 1 alive cell with less than 2 alive mates test");
+		}
 	}
 	
 	@Test
 	public void test1AliveCellWithMoreThan3AliveMatesDies() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(1, 4, true);
-		board.setNewStateCell(1, 5, true);
-		board.setNewStateCell(0, 4, true);
-		board.setNewStateCell(2, 4, true);
-		board.setNewStateCell(1, 3, true);
-		assertTrue("1 alive cell with more than 3 alives mates dies at the next generation", board.livesForTheNextGeneration(1, 4) == false);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4, 8);
+			board.setNewStateCell(1, 4, true);
+			board.setNewStateCell(1, 5, true);
+			board.setNewStateCell(0, 4, true);
+			board.setNewStateCell(2, 4, true);
+			board.setNewStateCell(1, 3, true);
+			assertTrue("1 alive cell with more than 3 alives mates dies at the next generation", board.livesForTheNextGeneration(1, 4) == false);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for 1 alive cell with more than 3 alive mates test");
+		}
 	}
 	
 	@Test
 	public void test1AliveCellWith2AliveMatesLives() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(1, 4, true);
-		board.setNewStateCell(1, 5, true);
-		board.setNewStateCell(1, 3, true);
-		assertTrue("1 alive cell with 2 alive mates lives at the next generation", board.livesForTheNextGeneration(1, 4) == true);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4, 8);
+			board.setNewStateCell(1, 4, true);
+			board.setNewStateCell(1, 5, true);
+			board.setNewStateCell(1, 3, true);
+			assertTrue("1 alive cell with 2 alive mates lives at the next generation", board.livesForTheNextGeneration(1, 4) == true);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for 1 alive cell with 2 alive mates test");
+		}
 	}
 	
 	@Test
 	public void test1AliveCellWith3AliveMatesLives() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(1, 4, true);
-		board.setNewStateCell(1, 5, true);
-		board.setNewStateCell(1, 3, true);
-		board.setNewStateCell(0, 4, true);
-		assertTrue("1 alive cell with 3 alive mates lives at the next generation", board.livesForTheNextGeneration(1, 4) == true);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4, 8);
+			board.setNewStateCell(1, 4, true);
+			board.setNewStateCell(1, 5, true);
+			board.setNewStateCell(1, 3, true);
+			board.setNewStateCell(0, 4, true);
+			assertTrue("1 alive cell with 3 alive mates lives at the next generation", board.livesForTheNextGeneration(1, 4) == true);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for 1 alive cell with 3 alive mates test");
+		}
 	}
 	
 	@Test
 	public void test1DeadCellWith2AliveMatesStaysDeath() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(1, 5, true);
-		board.setNewStateCell(1, 3, true);
-		assertTrue("1 dead cell with 2 alive mates stays dead at the the next generation", board.livesForTheNextGeneration(1, 4) == false);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4, 8);
+			board.setNewStateCell(1, 5, true);
+			board.setNewStateCell(1, 3, true);
+			assertTrue("1 dead cell with 2 alive mates stays dead at the the next generation", board.livesForTheNextGeneration(1, 4) == false);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for 1 dead cell with 2 alive mates test");
+		}
 	}
 	
 	@Test
 	public void test1DeadCellWith3AliveMatesLives() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(1, 3, true);
-		board.setNewStateCell(1, 5, true);
-		board.setNewStateCell(0, 4, true);
-		assertTrue("1 dead cell with 3 alive mates becomes alive at the next generation", board.livesForTheNextGeneration(1, 4) == true);
-	}
-	
-	@Test
-	public void testInterestCellsListLenghtFor0AliveCell() {
-		BoardFrame board = new BoardFrame(4, 8);
-		ArrayList<Point> interestingCellsList = board.getInterestCellsList();
-		assertTrue("Board with 0 alive cell has an interesting cells list of 0 lenght", interestingCellsList.isEmpty() == true);
-	}
-	
-	@Test
-	public void testInterestingCellsListLenghtFor1MiddleAliveCell() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(1, 4, true);
-		ArrayList<Point> interestingCellsList = board.getInterestCellsList();
-		assertTrue("Board with 1 alive cell in the middle has an interesting cells list of 9 lenght", (interestingCellsList.size() == 9) == true);
-	}
-	
-	@Test
-	public void testInterestingCellsListLenghtFor1CornerAliveCell() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(3, 7, true);
-		ArrayList<Point> interestingCellsList = board.getInterestCellsList();
-		assertTrue("Board with 1 alive cell on one corner has an intereseting cells list of 5 lenght", (interestingCellsList.size() == 4) == true);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4, 8);
+			board.setNewStateCell(1, 3, true);
+			board.setNewStateCell(1, 5, true);
+			board.setNewStateCell(0, 4, true);
+			assertTrue("1 dead cell with 3 alive mates becomes alive at the next generation", board.livesForTheNextGeneration(1, 4) == true);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for 1 dead cell with 3 alive mates test");
+		}
 	}
 	
 	@Test
 	public void testCalculateNewGeneration() {
-		BoardFrame board = new BoardFrame(4, 8);
-		board.setNewStateCell(1, 4, true);
-		board.setNewStateCell(1, 3, true);
-		board.setNewStateCell(1, 5, true);
-		board.setNewStateCell(0, 4, true);
-		board.calculateNextGeneration();
-		assertTrue("Board with these 4 alive cells will have 7 alive cells at the next generation", (board.getNumCurrentAliveCells() == 7) == true);
+		BoardFrame board;
+		try {
+			board = new BoardFrame(4, 8);
+			board.setNewStateCell(1, 4, true);
+			board.setNewStateCell(1, 3, true);
+			board.setNewStateCell(1, 5, true);
+			board.setNewStateCell(0, 4, true);
+			board.calculateNextGeneration();
+			assertTrue("Board with these 4 alive cells will have 7 alive cells at the next generation", (board.getNumCurrentAliveCells() == 7) == true);
+		} 
+		catch (IOException e) {
+			fail("Fail to create board for calucation new generation test");
+		}
 	}
+	
+//	@Test
+//	public void testInterestCellsListLenghtFor0AliveCell() {
+//		BoardFrame board = new BoardFrame(4, 8);
+//		ArrayList<Point> interestingCellsList = board.getInterestCellsList();
+//		assertTrue("Board with 0 alive cell has an interesting cells list of 0 lenght", interestingCellsList.isEmpty() == true);
+//	}
+	
+//	@Test
+//	public void testInterestingCellsListLenghtFor1MiddleAliveCell() {
+//		BoardFrame board = new BoardFrame(4, 8);
+//		board.setNewStateCell(1, 4, true);
+//		ArrayList<Point> interestingCellsList = board.getInterestCellsList();
+//		assertTrue("Board with 1 alive cell in the middle has an interesting cells list of 9 lenght", (interestingCellsList.size() == 9) == true);
+//	}
+	
+//	@Test
+//	public void testInterestingCellsListLenghtFor1CornerAliveCell() {
+//		BoardFrame board = new BoardFrame(4, 8);
+//		board.setNewStateCell(3, 7, true);
+//		ArrayList<Point> interestingCellsList = board.getInterestCellsList();
+//		assertTrue("Board with 1 alive cell on one corner has an intereseting cells list of 5 lenght", (interestingCellsList.size() == 4) == true);
+//	}
 }

@@ -5,15 +5,17 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Point;
+//import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
+//import java.util.ArrayList;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 /**
  * Board frame for the Game of Life. Composed by n Cells
@@ -35,21 +37,21 @@ public class BoardFrame extends JFrame {
 	private int colCount = 0;
 	private JPanel board;
 	
-	private ArrayList<Point> withAtLeastOneAliveMateCellsList;
+//	private ArrayList<Point> withAtLeastOneAliveMateCellsList;
  
 	/**
 	 * Constructor
 	 * @param NUM_ROW
 	 * @param NUM_COL
 	 */
-	public BoardFrame(final int NUM_ROW, final int NUM_COL) throws IllegalArgumentException {
+	public BoardFrame(final int NUM_ROW, final int NUM_COL) throws IOException  {
 		//Check the input value
 		if(NUM_ROW > 0 && NUM_COL > 0) {
 			//Create the Frame
 			final String TITLE_TXT = "Conway’s game of life";
 			setTitle(TITLE_TXT);
 			setDefaultCloseOperation(EXIT_ON_CLOSE);
-			final int DEFAULT_HIGH = 500;
+			final int DEFAULT_HIGH = 700;
 			final int DEFAULT_WIDTH = DEFAULT_HIGH * 16 / 9;
 			final Dimension DEFAULT_DIMENSION = new Dimension(DEFAULT_WIDTH, DEFAULT_HIGH);
 			setSize(DEFAULT_DIMENSION);
@@ -68,18 +70,18 @@ public class BoardFrame extends JFrame {
 			textPanel.setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.BLACK));
 			add(textPanel, BorderLayout.NORTH);
 			
-			//Add the command tests
-			final Font FONT = new Font("Consolas", Font.BOLD, 15);
-			final String SELECT_ALIVE_CELLS_TXT = "Select alive cells";
+			//Add the command texts
+			final Font FONT = new Font("Consolas", Font.BOLD, 18);
+			final String SELECT_ALIVE_CELLS_TXT = "1. - Select alive cells";
 			JLabel selectAliveCellsLabel = new JLabel(SELECT_ALIVE_CELLS_TXT);
 			selectAliveCellsLabel.setFont(FONT);
-			selectAliveCellsLabel.setHorizontalAlignment(JLabel.CENTER);
+			selectAliveCellsLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			textPanel.add(selectAliveCellsLabel, BorderLayout.WEST);
 			
-			final String START_GAME_TXT = "Press Select to calcule one generation";
+			final String START_GAME_TXT = "2. - Press Enter to calcule the next generation";
 			JLabel startGameLabel = new JLabel(START_GAME_TXT);
 			startGameLabel.setFont(FONT);
-			startGameLabel.setHorizontalAlignment(JLabel.CENTER);
+			startGameLabel.setHorizontalAlignment(SwingConstants.CENTER);
 			textPanel.add(startGameLabel, BorderLayout.EAST);
 			
 			//Set the panel for the cells
@@ -95,7 +97,7 @@ public class BoardFrame extends JFrame {
 			setVisible(true);
 		}
 		else {
-			throw new IllegalArgumentException();
+			throw new IOException();
 		}
 	}
 	
@@ -120,12 +122,8 @@ public class BoardFrame extends JFrame {
 		if(cellIsInTheGrid(ROW, COL)) {
 			for(int checkRow = ROW - 1; checkRow <= ROW + 1; checkRow++) {
 				for(int checkCol = COL - 1; checkCol <= COL + 1; checkCol ++) {
-					if(cellIsInTheGrid(checkRow, checkCol)) {
-						if(currentGenerationGridCells[checkRow][checkCol].isAlive()) {
-							if(!(checkRow == ROW && checkCol == COL)) {
-								numberAliveNeighbours++;
-							}
-						}
+					if(cellIsInTheGrid(checkRow, checkCol) && currentGenerationGridCells[checkRow][checkCol].isAlive() && !areTheSameCells(checkRow, checkCol, ROW, COL)) {
+						numberAliveNeighbours++;
 					}
 				}
 			}
@@ -136,10 +134,7 @@ public class BoardFrame extends JFrame {
 	public boolean livesForTheNextGeneration(final int ROW, final int COL) {
 		if(cellIsInTheGrid(ROW, COL)) {
 			int numberAliveNeighbours = countingAliveNeighbours(ROW, COL);
-			if(numberAliveNeighbours == 3) {
-				return true;
-			}
-			else if(numberAliveNeighbours == 2 && currentGenerationGridCells[ROW][COL].isAlive()) {
+			if(numberAliveNeighbours == 3 || (numberAliveNeighbours == 2 && currentGenerationGridCells[ROW][COL].isAlive())) {
 				return true;
 			}
 		}
@@ -149,15 +144,10 @@ public class BoardFrame extends JFrame {
 	public void calculateNextGeneration() {
 		for(int row = 0; row < rowCount; row++) {
 			for(int col = 0; col < colCount; col++) {
+				nextGenerationGridCells[row][col].setAlive(livesForTheNextGeneration(row, col));
 //		for(Point checkPoint : withAtLeastOneAliveMateCellsList) {
 //			int row = checkPoint.x;
 //			int col = checkPoint.y;
-			if(livesForTheNextGeneration(row, col)) {
-				nextGenerationGridCells[row][col].setAlive(true);
-			}
-			else {
-				nextGenerationGridCells[row][col].setAlive(false);
-			}
 //		}	
 			}
 		}
@@ -174,19 +164,19 @@ public class BoardFrame extends JFrame {
 	public void setNewStateCell(final int ROW, final int COL, final boolean IS_ALIVE) {
 		if(cellIsInTheGrid(ROW, COL)) {
 			currentGenerationGridCells[ROW][COL].setAlive(IS_ALIVE);
-			if(IS_ALIVE) {
-				updateWithAtLeastOneAliveMateCellsList(ROW, COL);
-			}
+//			if(IS_ALIVE) {
+//				updateWithAtLeastOneAliveMateCellsList(ROW, COL);
+//			}
 		}
 	}
 	
-	/**
-	 * This function is ONLY used by Unit Test
-	 * @return
-	 */
-	public ArrayList<Point> getInterestCellsList() {
-		return withAtLeastOneAliveMateCellsList;
-	}
+//	/**
+//	 * This function is ONLY used by Unit Test
+//	 * @return
+//	 */
+//	public ArrayList<Point> getInterestCellsList() {
+//		return withAtLeastOneAliveMateCellsList;
+//	}
 	
 	/***********
 	 * Private functions
@@ -197,16 +187,17 @@ public class BoardFrame extends JFrame {
 				//By Cell constructor, all new cells are dead
 				currentGenerationGridCells[row][col] = new Cell();
 				nextGenerationGridCells[row][col] = new Cell();
-				withAtLeastOneAliveMateCellsList = new ArrayList<Point>(0);
+//				withAtLeastOneAliveMateCellsList = new ArrayList<>(0);
 			}
 		}
 	}
 	
 	private boolean cellIsInTheGrid(final int CHECK_ROW, final int CHECK_COL) {
-		if(CHECK_ROW >= 0 && CHECK_ROW < rowCount && CHECK_COL >= 0 && CHECK_COL < colCount) {
-			return true;
-		}
-		return false;
+		return (CHECK_ROW >= 0 && CHECK_ROW < rowCount && CHECK_COL >= 0 && CHECK_COL < colCount);
+	}
+	
+	private boolean areTheSameCells(final int FIRST_CELL_ROW, final int FIRST_CELL_COL, final int SECOND_CELL_ROW, final int SECOND_CELL_COL) {
+		return (FIRST_CELL_ROW == SECOND_CELL_ROW && FIRST_CELL_COL == SECOND_CELL_COL);
 	}
 	
 	private void updateCurrentGenerationGridCells() {
@@ -227,20 +218,20 @@ public class BoardFrame extends JFrame {
 		}	
 	}
 	
-	private void updateWithAtLeastOneAliveMateCellsList(final int ROW, final int COL) {
-		if(cellIsInTheGrid(ROW, COL)) {
-			for(int row = ROW - 1; row <= ROW + 1; row ++) {
-				for(int col = COL - 1; col <= COL + 1; col++) {
-					if(cellIsInTheGrid(row, col)) {
-						Point cell = new Point(row, col);
-						if(!withAtLeastOneAliveMateCellsList.contains(cell)) {
-							withAtLeastOneAliveMateCellsList.add(cell);
-						}
-					}
-				}
-			}
-		}
-	}
+//	private void updateWithAtLeastOneAliveMateCellsList(final int ROW, final int COL) {
+//		if(cellIsInTheGrid(ROW, COL)) {
+//			for(int row = ROW - 1; row <= ROW + 1; row ++) {
+//				for(int col = COL - 1; col <= COL + 1; col++) {
+//					if(cellIsInTheGrid(row, col)) {
+//						Point cell = new Point(row, col);
+//						if(!withAtLeastOneAliveMateCellsList.contains(cell)) {
+//							withAtLeastOneAliveMateCellsList.add(cell);
+//						}
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	/***********
 	 * Private classes

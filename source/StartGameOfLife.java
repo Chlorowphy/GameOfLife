@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -132,10 +133,10 @@ public class StartGameOfLife extends JFrame {
 				dispose();
 			}
 			catch (NumberFormatException error) {
-				System.out.println("One or more of the input parameters are not numbers (" + numRowTxtField.getText() + ", " + numColRxtField.getText() + "), try again with correct values");
+				System.err.println("One or more of the input parameters are not numbers (" + numRowTxtField.getText() + ", " + numColRxtField.getText() + "), try again with correct values > 0");
 			}
-			catch (IllegalArgumentException error) {
-				System.out.println("One or more of the input parameters are not strict positive values (" + numRowTxtField.getText() + ", " + numColRxtField.getText() + "), try again with correct only > 0 values");
+			catch (IOException error) {
+				System.err.println("One or more of the input parameters are not strict positive values (" + numRowTxtField.getText() + ", " + numColRxtField.getText() + "), try again with correct values > 0");
 			}
 		}
 	}

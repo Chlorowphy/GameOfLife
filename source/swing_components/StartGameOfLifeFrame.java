@@ -1,4 +1,4 @@
-package source;
+package source.swing_components;
 
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,16 +15,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import source.game.GameBoard;
+
 /**
  * Main class for the Game of Life.
  * Create the first window asking the number of rows and columns, then create the Board with
  * these values.
  * @author William Pouts
- * @date 01/03/2020
- * @version 1.0
+ * @date 08/03/2020
+ * @version 2.0
  *
  */
-public class StartGameOfLife extends JFrame {
+public class StartGameOfLifeFrame extends JFrame {
 	/***********
 	 * Private parameters
 	 ***********/
@@ -38,14 +40,14 @@ public class StartGameOfLife extends JFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		StartGameOfLife game = new StartGameOfLife();
+		StartGameOfLifeFrame game = new StartGameOfLifeFrame();
 		game.setVisible(true);
 	}
 
 	/**
 	 * Constructor of Game
 	 */
-	public StartGameOfLife() {
+	public StartGameOfLifeFrame() {
 		//Create the Frame
 		final String TITLE = "Starting Menu";
 		setTitle(TITLE);
@@ -129,7 +131,8 @@ public class StartGameOfLife extends JFrame {
 			try {
 				final int NUM_ROWS = Integer.parseInt(numRowTxtField.getText());
 				final int NUM_COLUMNS = Integer.parseInt(numColRxtField.getText());
-				new BoardFrame(NUM_ROWS, NUM_COLUMNS);
+				GameBoard board = new GameBoard(NUM_ROWS, NUM_COLUMNS);
+				new GameBoardFrame(board);
 				dispose();
 			}
 			catch (NumberFormatException error) {
